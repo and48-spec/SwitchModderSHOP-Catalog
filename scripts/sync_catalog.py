@@ -65,6 +65,43 @@ def check_custom(entries, label):
             raise ValueError("Duplicate within " + label + ": " + k)
         ids.add(k)
 
+def normalize_for_switch(item):
+    """Return the client-compatible entry, keeping source fields otherwise intact.
+
+    The old Nintendo Switch SAX parser understands screenshots as an array,
+    but treats every other nested array as the end of the games list.
+    Upstream now emits "titles" as an array of release-title objects while
+    our C++ client expects the compact "ID:update:version;..." string.
+    """
+    result = dict(item)
+    if isinstance(result.get("titles"), list):
+        converted = []
+        for release in result["titles"]:
+            if isinstance(release, str):
+                # Accept complete encoded records as-is.
+                if len(release.split(":", 1)[0]) == 16:
+                    converted.append(release)
+                continue
+            if not isinstance(release, dict):
+                continue
+            title_id = str(release.get("id") or release.get("title_id") or "").strip().upper()
+            if len(title_id) != 16 or any(ch not in "0123456789ABCDEF" for ch in title_id):
+                continue
+            version_value = release.get("update_version")
+            update = str(version_value) if (
+                isinstance(version_value, int) and version_value >= 0
+            ) or (isinstance(version_value, str) and version_value.isdecimal()) else ""
+            version = str(release.get("version") or "").replace(";", " ").replace(":", " ")
+            converted.append(f"{title_id}:{update}:{version}")
+        result["titles"] = ";".join(converted)
+    # Unknown nested arrays must not silently terminate a full feed in a
+    # previously released Switch client. Retain their information as JSON text.
+    for key, value in result.items():
+        if key != "screenshots" and isinstance(value, list):
+            result[key] = json.dumps(value, ensure_ascii=False, separators=(",", ":"))
+    return result
+
+
 def main():
     custom = read_json(ROOT / "data/custom_games.json")
     addons = read_json(ROOT / "data/addons.json")
@@ -107,10 +144,20 @@ def main():
         else:
             positions[k] = [len(result)]
             result.append(entry)
-    output = result if container_key is None else {**source, container_key: result}
+    # Produce one normalized feed. The upstream JSON is never modified and
+    # custom records remain editable independently.
+    output_games = [normalize_for_switch(game) for game in result]
+    visible_count = sum(bool(str(item.get("title") or "").strip()) for item in output_games)
+    if visible_count < 1000:
+        raise ValueError(f"Client-compatible feed has only {visible_count} titles")
+    if container_key is None:
+        output = output_games
+    else:
+        output = {key: value for key, value in source.items() if key != container_key}
+        output["games"] = output_games
     changed = write_json(ROOT / "generated/catalog.json", output)
     changed_addons = write_json(ROOT / "generated/addons.json", normalized_addons)
-    print(f"Games: {len(result)}; addons: {len(addons)}; changed: {changed or changed_addons}")
+    print(f"Games: {len(result)}; client titles: {visible_count}; addons: {len(addons)}; changed: {changed or changed_addons}")
     return 0
 
 if __name__ == "__main__":
