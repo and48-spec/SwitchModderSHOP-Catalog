@@ -1,0 +1,29 @@
+name: Update catalog
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 3 * * *'
+permissions:
+  contents: write
+concurrency:
+  group: catalog-sync
+  cancel-in-progress: false
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Generate catalog
+        run: python scripts/sync_catalog.py
+      - name: Commit changes only if needed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add generated/catalog.json generated/addons.json
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: synchronize catalog"
+            git push
+          fi
