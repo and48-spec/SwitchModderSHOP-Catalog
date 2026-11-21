@@ -25,6 +25,28 @@ jobs:
           python-version: '3.12'
       - name: Generate catalog
         run: python scripts/sync_catalog.py
+      - name: Diagnose Nintendo Switch client JSON compatibility
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          path=Path('generated/catalog.json')
+          root=json.loads(path.read_text(encoding='utf-8'))
+          print('ROOT_TYPE:',type(root).__name__)
+          if isinstance(root,dict):
+              print('ROOT_KEYS:',list(root)[:30])
+              for k,v in root.items():
+                  if isinstance(v,list):
+                      print('ROOT_ARRAY:',k,'COUNT:',len(v))
+          elif isinstance(root,list):
+              print('ROOT_COUNT:',len(root))
+          games = root if isinstance(root,list) else root.get('games',root.get('entries',[]))
+          print('SWITCH_READER_VISIBLE_COUNT:',len(games) if isinstance(games,list) else 'invalid')
+          for game in (games[:3] if isinstance(games,list) else []):
+              print('SAMPLE:',repr({k:game.get(k) for k in ('title','name','title_id','magnet','url')})[:320])
+          if not isinstance(games,list) or len(games)<1000:
+              print('::warning::Public catalog root is incompatible with NRO: expected games, entries or root array')
+          PY
       - name: Commit changes only if needed
         run: |
           git config user.name "github-actions[bot]"
