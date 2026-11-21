@@ -72,20 +72,20 @@ def main():
     check_custom(addons, "addons.json")
     source = upstream()
     base, container_key = records(source)
-    result = []
+    # Preserve EVERY upstream entry (including multiple releases/versions).
+    result = list(base)
     positions = {}
-    for entry in base:
+    for index, entry in enumerate(result):
         k = key_for(entry)
-        if k not in positions:
-            positions[k] = len(result)
-            result.append(entry)
+        positions.setdefault(k, []).append(index)
     for entry in custom:
         k = key_for(entry)
         if k in positions:
-            # Local entries override upstream metadata for the same title.
-            result[positions[k]] = {**result[positions[k]], **entry}
+            # Apply local metadata to matching entries without dropping versions.
+            for index in positions[k]:
+                result[index] = {**result[index], **entry}
         else:
-            positions[k] = len(result)
+            positions[k] = [len(result)]
             result.append(entry)
     output = result if container_key is None else {**source, container_key: result}
     changed = write_json(ROOT / "generated/catalog.json", output)
