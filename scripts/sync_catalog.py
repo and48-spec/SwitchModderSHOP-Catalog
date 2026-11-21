@@ -70,6 +70,21 @@ def main():
     addons = read_json(ROOT / "data/addons.json")
     check_custom(custom, "custom_games.json")
     check_custom(addons, "addons.json")
+    normalized_addons = []
+    for entry in addons:
+        title = str(entry.get("title") or "").strip()
+        parent = str(entry.get("parent_title_id") or entry.get("base_title_id") or "").strip().upper()
+        content_type = str(entry.get("content_type") or entry.get("type") or "").strip().lower()
+        if not title or not parent:
+            raise ValueError("Each add-on needs title and parent_title_id")
+        if content_type not in ("dlc", "language", "update", "other"):
+            raise ValueError("Invalid add-on content_type: " + content_type)
+        normalized = dict(entry)
+        normalized["parent_title_id"] = parent
+        normalized["content_type"] = content_type
+        normalized.pop("base_title_id", None)
+        normalized.pop("type", None)
+        normalized_addons.append(normalized)
     source = upstream()
     base, container_key = records(source)
     # Refuse destructive updates from a truncated or empty upstream response.
@@ -94,7 +109,7 @@ def main():
             result.append(entry)
     output = result if container_key is None else {**source, container_key: result}
     changed = write_json(ROOT / "generated/catalog.json", output)
-    changed_addons = write_json(ROOT / "generated/addons.json", addons)
+    changed_addons = write_json(ROOT / "generated/addons.json", normalized_addons)
     print(f"Games: {len(result)}; addons: {len(addons)}; changed: {changed or changed_addons}")
     return 0
 
