@@ -46,6 +46,7 @@ jobs:
               print('SAMPLE:',repr({k:game.get(k) for k in ('title','name','title_id','magnet','url')})[:320])
               print('SAMPLE_ARRAY_FIELDS',index,[(k,len(v)) for k,v in game.items() if isinstance(v,list)])
               print('SAMPLE_ALL_KEYS',index,list(game.keys())[:32])
+              if index == 0: print('FIRST_TITLES_EXAMPLE',repr(game.get('titles'))[:1200])
           if not isinstance(games,list) or len(games)<1000:
               print('::warning::Public catalog root is incompatible with NRO: expected games, entries or root array')
           PY
