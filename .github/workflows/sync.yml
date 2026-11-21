@@ -1,6 +1,13 @@
 name: Update catalog
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'data/custom_games.json'
+      - 'data/addons.json'
+      - 'scripts/sync_catalog.py'
+      - '.github/workflows/sync.yml'
   schedule:
     - cron: '17 3 * * *'
 permissions:
