@@ -16,11 +16,31 @@ Local game records should follow upstream field names, such as `title`,
 fields used by the Switch client. A local game with the same `title_id` overrides
 the upstream fields it supplies without deleting other upstream fields.
 
-Add-ons use their own `title_id` and may use `base_title_id` to reference
-their parent game. Suggested metadata fields: `title`, `title_id`,
-`base_title_id`, `type` (dlc, language, update, other), `language`,
-`version`, `description`, `cover`. Only include distribution URLs
-for content you are authorized to distribute.
+Add-ons are stored separately and linked to a game using `parent_title_id`.
+Each add-on requires `title`, `parent_title_id`, and `content_type`
+(`dlc`, `language`, `update`, or `other`). Optional fields include
+`title_id`, `language`, `version`, `description`, `cover`, and `url`.
+The older input aliases `base_title_id` and `type` are accepted but
+converted to the canonical fields in `generated/addons.json`.
+
+Example metadata-only language pack record:
+
+```json
+[
+  {
+    "title": "Italian language pack (example)",
+    "parent_title_id": "0100000000000000",
+    "content_type": "language",
+    "language": "it",
+    "description": "Example only; replace with a real, verified title ID"
+  }
+]
+```
+
+The example ID above is a placeholder, not a verified game identifier.
+Only include links to content you are authorized to distribute. The
+add-ons file is not yet consumed by the NRO; the console detail UI must
+be enhanced to display content linked to `parent_title_id`.
 
 ## Maintenance
 
