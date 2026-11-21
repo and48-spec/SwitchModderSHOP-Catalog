@@ -72,6 +72,11 @@ def main():
     check_custom(addons, "addons.json")
     source = upstream()
     base, container_key = records(source)
+    # Refuse destructive updates from a truncated or empty upstream response.
+    if len(base) < 1000:
+        raise ValueError(f"Upstream has only {len(base)} records; refusing to replace the catalog")
+    if any(not isinstance(entry, dict) for entry in base):
+        raise ValueError("Upstream contains non-object records")
     # Preserve EVERY upstream entry (including multiple releases/versions).
     result = list(base)
     positions = {}
