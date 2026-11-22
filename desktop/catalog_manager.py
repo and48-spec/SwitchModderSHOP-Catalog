@@ -110,7 +110,7 @@ class CatalogManager(tk.Tk):
         self.loaded_addons = None
         self.public_games = []
         self.remote_loaded = False
-        self.dirty = False
+        self.dirty = (self.folder / "pending.json").exists()
         self.last_game_id = ""
         self.visible_game_rows = {}
         self.visible_addon_rows = {}
@@ -348,6 +348,10 @@ class CatalogManager(tk.Tk):
                 backup_local(folder, originals)
             atomic_write(folder / "custom_games.json", json_text(games))
             atomic_write(folder / "addons.json", json_text(addons))
+            if self.dirty:
+                atomic_write(folder / "pending.json", '{"pending": true}\n')
+            else:
+                (folder / "pending.json").unlink(missing_ok=True)
             self.status.set("Copie locali salvate in: " + str(folder))
         except (OSError, ValueError) as exc:
             messagebox.showerror("Salvataggio non riuscito", str(exc))
@@ -378,10 +382,13 @@ class CatalogManager(tk.Tk):
         callback(result)
 
     def load_github(self):
-        if self.dirty and not messagebox.askyesno("Modifiche locali",
-            "Ricaricare GitHub sostituendo le modifiche non pubblicate? "
-            "Salva prima una copia locale se vuoi conservarle."):
+        keep_pending = self.dirty
+        if keep_pending and not messagebox.askyesno("Modifiche locali",
+            "Vuoi unire le modifiche locali non pubblicate con i dati di GitHub? "
+            "Le voci locali avranno precedenza in caso di corrispondenza."):
             return
+        local_games = list(self.games)
+        local_addons = list(self.addons)
         token = self.token.get().strip()
         def job():
             games, addons = get_inputs(token)
@@ -393,11 +400,20 @@ class CatalogManager(tk.Tk):
                 note = str(exc)
             return games, addons, upstream, note
         def done(result):
-            self.games, self.addons, self.public_games, note = result
-            self.loaded_games = json.loads(json_text(self.games))
-            self.loaded_addons = json.loads(json_text(self.addons))
+            remote_games, remote_addons, self.public_games, note = result
+            self.loaded_games = json.loads(json_text(remote_games))
+            self.loaded_addons = json.loads(json_text(remote_addons))
+            if keep_pending:
+                merged_games = {key_for(x): x for x in remote_games}
+                merged_games.update({key_for(x): x for x in local_games})
+                merged_addons = {addon_key(x): x for x in remote_addons}
+                merged_addons.update({addon_key(x): x for x in local_addons})
+                self.games, self.addons = validate(
+                    list(merged_games.values()), list(merged_addons.values()))
+            else:
+                self.games, self.addons = remote_games, remote_addons
             self.remote_loaded = True
-            self.dirty = False
+            self.dirty = keep_pending
             self.save_local()
             self.refresh_tables()
             self.status.set("Dati GitHub caricati. " +
@@ -431,6 +447,7 @@ class CatalogManager(tk.Tk):
             self.loaded_games = json.loads(json_text(games))
             self.loaded_addons = json.loads(json_text(addons))
             self.dirty = False
+            self.save_local()
             self.refresh_tables()
             self.status.set("Pubblicazione completata: " + sha[:12] +
                              ". GitHub Actions sta aggiornando il catalogo.")
@@ -449,9 +466,14 @@ class CatalogManager(tk.Tk):
             subprocess.Popen(["xdg-open", str(self.folder)])
 
     def close(self):
-        if self.dirty and not messagebox.askyesno("Modifiche non salvate",
-                "Ci sono modifiche non pubblicate. Uscire senza salvarle?"):
-            return
+        if self.dirty:
+            choice = messagebox.askyesnocancel("Modifiche non pubblicate",
+                "Vuoi salvare le modifiche locali prima di uscire?\n"
+                "Potrai riprenderle e unirle a GitHub al prossimo avvio.")
+            if choice is None:
+                return
+            if choice:
+                self.save_local()
         self.destroy()
 
 
