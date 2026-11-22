@@ -270,7 +270,19 @@ class CatalogManager(tk.Tk):
                 messagebox.showwarning("Title ID mancante",
                     "Per sovrascrivere senza duplicare un titolo upstream serve un Title ID.")
                 return
-            initial = {} if is_new else dict(record)
+            if is_new:
+                initial = {}
+            else:
+                # Save only editable overrides, not the entire (potentially huge)
+                # upstream record and its nested release metadata.
+                initial = {field: record[field] for field, _label in GAME_FIELDS
+                           if field in record}
+                if not initial.get("title_id") and record.get("titleId"):
+                    initial["title_id"] = str(record["titleId"])
+                old_override = next((entry for entry in self.games if key_for(entry) == old_key), {})
+                for field, value in old_override.items():
+                    if field not in initial:
+                        initial[field] = value
             def save_game(result):
                 try:
                     proposed = [x for x in self.games if is_new or key_for(x) != old_key]
@@ -397,6 +409,9 @@ class CatalogManager(tk.Tk):
         if not self.remote_loaded:
             messagebox.showwarning("Carica GitHub",
                     "Prima della pubblicazione carica i dati dal repository per rilevare conflitti.")
+            return
+        if not self.dirty:
+            messagebox.showinfo("Nessuna modifica", "Non ci sono modifiche da pubblicare.")
             return
         if not self.token.get().strip():
             messagebox.showwarning("Token mancante", "Inserisci il token GitHub per pubblicare.")
