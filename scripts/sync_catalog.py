@@ -65,6 +65,30 @@ def check_custom(entries, label):
             raise ValueError("Duplicate within " + label + ": " + k)
         ids.add(k)
 
+def check_addons(entries):
+    """Different games may legitimately contain similarly named DLC/language packs."""
+    if not isinstance(entries, list):
+        raise ValueError("addons.json must be a JSON array")
+    keys = set()
+    for entry in entries:
+        if not isinstance(entry, dict):
+            raise ValueError("Add-on records must be JSON objects")
+        title = str(entry.get("title") or "").strip()
+        parent = str(entry.get("parent_title_id") or entry.get("base_title_id") or "").strip().upper()
+        kind = str(entry.get("content_type") or entry.get("type") or "").strip().lower()
+        ident = str(entry.get("title_id") or "").strip().upper()
+        if not title or len(parent) != 16 or any(x not in "0123456789ABCDEF" for x in parent):
+            raise ValueError("Add-on requires title and 16-character parent_title_id")
+        if kind not in ("dlc", "language", "update", "other"):
+            raise ValueError("Invalid add-on content_type: " + kind)
+        if ident and (len(ident) != 16 or any(x not in "0123456789ABCDEF" for x in ident)):
+            raise ValueError("Invalid add-on title_id: " + ident)
+        key = ("id:" + ident) if ident else ("addon:" + parent + "/" + kind + "/" + title.casefold())
+        if key in keys:
+            raise ValueError("Duplicate within addons.json: " + key)
+        keys.add(key)
+
+
 def normalize_for_switch(item):
     """Return the client-compatible entry, keeping source fields otherwise intact.
 
@@ -106,7 +130,7 @@ def main():
     custom = read_json(ROOT / "data/custom_games.json")
     addons = read_json(ROOT / "data/addons.json")
     check_custom(custom, "custom_games.json")
-    check_custom(addons, "addons.json")
+    check_addons(addons)
     normalized_addons = []
     for entry in addons:
         title = str(entry.get("title") or "").strip()
