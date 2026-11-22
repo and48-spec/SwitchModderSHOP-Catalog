@@ -1,0 +1,75 @@
+name: Update request status
+on:
+  workflow_dispatch:
+    inputs:
+      request_id:
+        description: 'Full 32-character request code from the Telegram message'
+        required: true
+        type: string
+      status:
+        description: 'Administrative review state'
+        required: true
+        type: choice
+        options:
+          - in_review
+          - approved
+          - rejected
+      note:
+        description: 'Optional PUBLIC short note (do not include personal data)'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: neon-request-statuses
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Update anonymous status
+        env:
+          REQUEST_ID: ${{ inputs.request_id }}
+          REVIEW_STATUS: ${{ inputs.status }}
+          REVIEW_NOTE: ${{ inputs.note }}
+        run: |
+          python3 - <<'PY'
+          import json, os, pathlib, re
+          from datetime import datetime, timezone
+
+          request_id = os.environ["REQUEST_ID"].strip().lower().lstrip("#")
+          status = os.environ["REVIEW_STATUS"].strip()
+          note = os.environ.get("REVIEW_NOTE", "").strip()
+          if not re.fullmatch(r"[0-9a-f]{32}", request_id):
+              raise ValueError("Request code must contain exactly 32 hexadecimal characters")
+          if status not in {"in_review", "approved", "rejected"}:
+              raise ValueError("Unsupported status")
+          if len(note) > 160 or "\n" in note or "\r" in note:
+              raise ValueError("Public note must be a single line of at most 160 characters")
+          path = pathlib.Path("requests/statuses.json")
+          data = json.loads(path.read_text(encoding="utf-8"))
+          if data.get("version") != 1 or not isinstance(data.get("requests"), dict):
+              raise ValueError("Status feed schema invalid")
+          data["requests"][request_id] = {
+              "status": status,
+              "updated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+              "note": note,
+          }
+          path.write_text(json.dumps(data, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+                          encoding="utf-8")
+          print(f"Request #{request_id[:8]} now {status}")
+          PY
+      - name: Publish status
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add requests/statuses.json
+          if ! git diff --cached --quiet; then
+            git commit -m "requests: update review status"
+            git pull --rebase origin main
+            git push origin main
+          fi
