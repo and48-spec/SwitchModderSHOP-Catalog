@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - 'desktop/**'
+      - 'scripts/sync_catalog.py'
       - '.github/workflows/build-catalog-manager.yml'
   workflow_dispatch:
 
@@ -27,6 +28,17 @@ jobs:
           sys.path.insert(0, "desktop")
           from catalog_manager_core import self_test
           self_test()
+          from scripts.sync_catalog import check_addons
+          a = {"title":"Italian pack", "parent_title_id":"010000000000000A", "content_type":"language"}
+          b = {"title":"Italian pack", "parent_title_id":"010000000000000B", "content_type":"language"}
+          check_addons([a,b])
+          try:
+              check_addons([a,dict(a)])
+          except ValueError:
+              pass
+          else:
+              raise AssertionError("Duplicate add-ons passed validation")
+          print("Catalog generator add-on tests OK")
           PY
 
   windows-executable:
