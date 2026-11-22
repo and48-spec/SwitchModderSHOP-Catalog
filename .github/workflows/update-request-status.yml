@@ -1,21 +1,22 @@
-name: Update request status
+name: Gestisci richieste Neon
 on:
   workflow_dispatch:
     inputs:
       request_id:
-        description: 'Full 32-character request code from the Telegram message'
+        description: 'Codice ticket dal messaggio Telegram (32 caratteri, anche con #)'
         required: true
         type: string
       status:
-        description: 'Administrative review state'
+        description: 'Nuovo stato del ticket'
         required: true
         type: choice
         options:
+          - sent
           - in_review
           - approved
           - rejected
       note:
-        description: 'Optional PUBLIC short note (do not include personal data)'
+        description: 'Nota facoltativa PUBBLICA (senza dati personali)'
         required: false
         type: string
 
@@ -46,7 +47,7 @@ jobs:
           note = os.environ.get("REVIEW_NOTE", "").strip()
           if not re.fullmatch(r"[0-9a-f]{32}", request_id):
               raise ValueError("Request code must contain exactly 32 hexadecimal characters")
-          if status not in {"in_review", "approved", "rejected"}:
+          if status not in {"sent", "in_review", "approved", "rejected"}:
               raise ValueError("Unsupported status")
           if len(note) > 160 or "\n" in note or "\r" in note:
               raise ValueError("Public note must be a single line of at most 160 characters")
@@ -62,6 +63,10 @@ jobs:
           path.write_text(json.dumps(data, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
                           encoding="utf-8")
           print(f"Request #{request_id[:8]} now {status}")
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as summary:
+              summary.write(f"### Ticket #{request_id[:8]} aggiornato\\n\\n")
+              summary.write(f"**Nuovo stato:** `{status}`\\n\\n")
+              summary.write("La Switch interessata leggerà il nuovo stato al prossimo aggiornamento.\\n")
           PY
       - name: Publish status
         run: |
