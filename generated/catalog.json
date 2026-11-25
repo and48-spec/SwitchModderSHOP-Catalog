@@ -7052,13 +7052,13 @@
     "size": "41.74 GB",
     "magnet": "magnet:?xt=urn:btih:0FB028EFBF0571617165BDE31CEBBB919C5A5BDC&tr=http%3A%2F%2Fbt.t-ru.org%2Fann%3Fmagnet",
     "topic_id": "6908816",
-    "url": "https://rutracker.org/forum/viewtopic.php?t=6908816",
+    "url": "https://rutracker.org/forum/viewtopic.php?t=6900804",
     "year": "2013",
     "genre": "Action, Adventure, Homebrew",
     "developer": "Rockstar North",
     "publisher": "gorgylka, M0jso, ParalympicsProd, Lapsus$",
     "image_format": ".NSZ (сжато ~3%, установленный объём 43.17 ГБ), репак",
-    "interface_lang": "Русский, Английский [RUS / ENG / Multi 12]",
+    "interface_lang": "[ITA / RUS / ENG / Multi 12]",
     "voice_lang": "английская",
     "performance": "Да (на 22.5.0, Atmosphere 1.11.2)",
     "multiplayer": "нет",
@@ -7074,7 +7074,7 @@
       "https://i128.fastpic.org/thumb/2026/0915/b6/dd446d5981adcaa608a091efe532f2b6.jpeg",
       "https://i128.fastpic.org/thumb/2026/0915/e0/acd8178637f75bacc89e20a34a8218e0.jpeg"
     ],
-    "description": "Когда отставной грабитель банков, молодой уличный жулик и опасный для общества психопат втроём оказываются втянуты в разборки с самыми пугающими и сумасшедшими представителями криминального мира, правительства США и индустрии развлечений, им приходится выполнить серию рискованных налетов, чтобы выжить в безжалостном городе, где они не могут доверять никому – и в первую очередь друг другу…\nДействие игры происходит в вымышленном штате Сан-Андреас, прообразом которого послужила Южная Калифорния. Сюжет в однопользовательском режиме строится вокруг приключений троих грабителей, устраивающих всё более дерзкие ограбления и противостоящих как организованной преступности, так и правоохранительным ведомствам. В процессе игры игрок управляет выбранным персонажем в режиме от первого или от третьего лица; персонаж может свободно передвигаться по обширному миру игры как пешком, так и на автомобилях и других видах транспорта. Особенностью Grand Theft Auto V по сравнению с другими играми серии является возможность переключаться между персонажами в любой момент, как во время выполнения заданий, так и вне их. Многие задания игры связаны с ограблениями и угоном автомобилей; при этом игровой персонаж может участвовать в перестрелках и погонях.\nБольшое внимание со стороны разработчиков получили миссии и занятия. Для каждого из 3-х главных героев имеются свои миссии, выполнять их можно практически всегда в любом порядке, переключаясь между протагонистами. В предыдущих играх серии было множество однотипных заданий, в GTA V же практически все сюжетные миссии особенны: от захватывающей погони за собственной яхтой до самого масштабного ограбления федерального резерва. А ещё каждый персонаж имеет своё хобби!Обязательно нужен максимальный разгон консоли. Это пока первые версии хоумбрю, возможны баги. НЕ НАЖИМАЙТЕ где-либо внутриигровую программную кнопку «записать видео» в игре, это вызывает крэш; кнопку Capture на левом джойконе нажимать можно. Ещё методы обхода багов. Субтитры включаются в главном меню игры нажатием на кнопку «+» > три раза R (правый бампер) > Настройки (Settings) > Видео (Display) > Субтитры (Subtitles) > A. Чтобы установить любительскую машинную озвучку, скачайте её отсюда и разархивируйте atmosphere.7z из папки 'Russian Machine Voiceover LFS Mod' в корень карты памяти microSD. Cентябрьский IPS-мод увеличения производительности путём разблокировки 4-го ядра CPU для игры от YNWAMAX находится тут, там же есть сейвы и читы.",
+    "description": "Quando un rapinatore di banche in pensione, un giovane truffatore di strada e uno psicopatico pericoloso si ritrovano coinvolti in uno scontro con le figure più temute e squilibrate della malavita, del governo degli Stati Uniti e dell'industria dell'intrattenimento, devono intraprendere una serie di rapine rischiose per sopravvivere in una città spietata dove non possono fidarsi di nessuno, men che meno l'uno dell'altro.\n\nIl gioco è ambientato nello stato immaginario di San Andreas, ispirato alla California meridionale. La storia per giocatore singolo segue le avventure di tre rapinatori che mettono a segno colpi sempre più audaci e si scontrano sia con la criminalità organizzata che con le forze dell'ordine. I giocatori controllano il personaggio scelto in prima o terza persona e possono esplorare liberamente il vasto mondo di gioco a piedi, in auto e con altri mezzi di trasporto. Una caratteristica unica di Grand Theft Auto V rispetto agli altri giochi della serie è la possibilità di passare da un personaggio all'altro in qualsiasi momento, sia durante che al di fuori delle missioni. Molte delle missioni del gioco ruotano attorno a rapine e furti d'auto, mentre il personaggio giocabile può anche partecipare a sparatorie e inseguimenti.\nGli sviluppatori hanno prestato molta attenzione alle missioni e alle attività. Ognuno dei tre personaggi principali ha le proprie missioni, che possono essere completate in quasi qualsiasi ordine, passando da un protagonista all'altro. I precedenti giochi della serie presentavano numerose missioni simili, ma in GTA V quasi ogni missione della storia è unica: da un emozionante inseguimento per recuperare il proprio yacht alla più grande rapina di sempre alla Federal Reserve. E ogni personaggio ha il suo hobby!",
     "title_id": "0100B00B51230000",
     "titles": "0100B00B51230000:0:"
   },
@@ -8330,9 +8330,9 @@
     "titles": "010019B024D9A000:262144:"
   },
   {
-    "title": "Grand Theft Auto V (порт GTA 5) [NRO][RUS/Multi12]",
+    "title": "Grand Theft Auto V (порт GTA 5, репак) [RePack][NSZ][RUS/Multi12]",
     "size": "54.38 GB",
-    "magnet": "magnet:?xt=urn:btih:2DF1555C454F103487A49CE71C7AA478F09E2A08&tr=http%3A%2F%2Fbt2.t-ru.org%2Fann%3Fmagnet",
+    "magnet": "magnet:?xt=urn:btih:0FB028EFBF0571617165BDE31CEBBB919C5A5BDC&tr=http%3A%2F%2Fbt.t-ru.org%2Fann%3Fmagnet",
     "topic_id": "6900804",
     "url": "https://rutracker.org/forum/viewtopic.php?t=6900804",
     "year": "2013",
@@ -8340,11 +8340,11 @@
     "developer": "Rockstar North",
     "publisher": "M0jso, ParalympicsProd, Lapsus$",
     "image_format": "NRO",
-    "interface_lang": "Русский, Английский [RUS / ENG / Multi 12]",
+    "interface_lang": "[ITA / RUS / ENG / Multi 12]",
     "voice_lang": "английская + русская машинная, от SynthVoiceRu (пример озвучки)",
     "performance": "Да (на 22.5.0, Atmosphere 1.11.2)",
     "multiplayer": "нет",
-    "cover": "https://i6.imageban.ru/out/2026/08/22/734ccfef0adf847fee9d4660e7aed2a5.png",
+    "cover": "https://i7.imageban.ru/out/2026/09/15/a9f0d807b4b912abc6cfce392514d6da.png",
     "screenshots": [
       "https://i128.fastpic.org/thumb/2026/0828/c9/7998dd78f81427a94751671cbd82fcc9.jpeg",
       "https://i128.fastpic.org/thumb/2026/0828/61/b9b57fcd868448dc51ed70c2e31c4061.jpeg",
@@ -8356,7 +8356,7 @@
       "https://i128.fastpic.org/thumb/2026/0828/ee/50560e29c06cd80b9b8bee94d9b527ee.jpeg",
       "https://i128.fastpic.org/thumb/2026/0907/c8/aaa564b0d9f398acd59a4874c151e4c8.jpeg"
     ],
-    "description": "Когда отставной грабитель банков, молодой уличный жулик и опасный для общества психопат втроём оказываются втянуты в разборки с самыми пугающими и сумасшедшими представителями криминального мира, правительства США и индустрии развлечений, им приходится выполнить серию рискованных налетов, чтобы выжить в безжалостном городе, где они не могут доверять никому – и в первую очередь друг другу…\nДействие игры происходит в вымышленном штате Сан-Андреас, прообразом которого послужила Южная Калифорния. Сюжет в однопользовательском режиме строится вокруг приключений троих грабителей, устраивающих всё более дерзкие ограбления и противостоящих как организованной преступности, так и правоохранительным ведомствам. В процессе игры игрок управляет выбранным персонажем в режиме от первого или от третьего лица; персонаж может свободно передвигаться по обширному миру игры как пешком, так и на автомобилях и других видах транспорта. Особенностью Grand Theft Auto V по сравнению с другими играми серии является возможность переключаться между персонажами в любой момент, как во время выполнения заданий, так и вне их. Многие задания игры связаны с ограблениями и угоном автомобилей; при этом игровой персонаж может участвовать в перестрелках и погонях.\nБольшое внимание со стороны разработчиков получили миссии и занятия. Для каждого из 3-х главных героев имеются свои миссии, выполнять их можно практически всегда в любом порядке, переключаясь между протагонистами. В предыдущих играх серии было множество однотипных заданий, в GTA V же практически все сюжетные миссии особенны: от захватывающей погони за собственной яхтой до самого масштабного ограбления федерального резерва. А ещё каждый персонаж имеет своё хобби!",
+    "description": "Quando un rapinatore di banche in pensione, un giovane truffatore di strada e uno psicopatico pericoloso si ritrovano coinvolti in uno scontro con le figure più temute e squilibrate della malavita, del governo degli Stati Uniti e dell'industria dell'intrattenimento, devono intraprendere una serie di rapine rischiose per sopravvivere in una città spietata dove non possono fidarsi di nessuno, men che meno l'uno dell'altro.\n\nIl gioco è ambientato nello stato immaginario di San Andreas, ispirato alla California meridionale. La storia per giocatore singolo segue le avventure di tre rapinatori che mettono a segno colpi sempre più audaci e si scontrano sia con la criminalità organizzata che con le forze dell'ordine. I giocatori controllano il personaggio scelto in prima o terza persona e possono esplorare liberamente il vasto mondo di gioco a piedi, in auto e con altri mezzi di trasporto. Una caratteristica unica di Grand Theft Auto V rispetto agli altri giochi della serie è la possibilità di passare da un personaggio all'altro in qualsiasi momento, sia durante che al di fuori delle missioni. Molte delle missioni del gioco ruotano attorno a rapine e furti d'auto, mentre il personaggio giocabile può anche partecipare a sparatorie e inseguimenti.\nGli sviluppatori hanno prestato molta attenzione alle missioni e alle attività. Ognuno dei tre personaggi principali ha le proprie missioni, che possono essere completate in quasi qualsiasi ordine, passando da un protagonista all'altro. I precedenti giochi della serie presentavano numerose missioni simili, ma in GTA V quasi ogni missione della storia è unica: da un emozionante inseguimento per recuperare il proprio yacht alla più grande rapina di sempre alla Federal Reserve. E ogni personaggio ha il suo hobby!",
     "title_id": "0100B00B51230000",
     "version": "09.09.2026",
     "titles": "0100B00B51230000::"
