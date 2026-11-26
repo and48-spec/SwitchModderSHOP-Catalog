@@ -1,0 +1,74 @@
+name: Build Windows Catalog Manager
+
+on:
+  pull_request:
+    paths:
+      - 'desktop/**'
+      - 'scripts/sync_catalog.py'
+      - '.github/workflows/build-catalog-manager.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Compile Python files
+        run: python -m py_compile desktop/catalog_manager_core.py desktop/catalog_manager.py
+      - name: Validate catalog model without network or UI
+        run: |
+          python - <<'PY'
+          import sys
+          sys.path.insert(0, "desktop")
+          from catalog_manager_core import self_test
+          self_test()
+          from scripts.sync_catalog import check_addons
+          a = {"title":"Italian pack", "parent_title_id":"010000000000000A", "content_type":"language"}
+          b = {"title":"Italian pack", "parent_title_id":"010000000000000B", "content_type":"language"}
+          check_addons([a,b])
+          try:
+              check_addons([a,dict(a)])
+          except ValueError:
+              pass
+          else:
+              raise AssertionError("Duplicate add-ons passed validation")
+          print("Catalog generator add-on tests OK")
+          PY
+
+  windows-executable:
+    needs: validate
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install executable builder
+        run: python -m pip install "pyinstaller>=6,<7"
+      - name: Run local model tests
+        run: python desktop/catalog_manager.py --self-test
+      - name: Build self-contained Windows application
+        run: >
+          pyinstaller --noconfirm --clean --onefile --windowed
+          --name SwitchModderSHOP-Catalog-Manager
+          desktop/catalog_manager.py
+      - name: Check Windows executable
+        shell: pwsh
+        run: |
+          $app = "dist/SwitchModderSHOP-Catalog-Manager.exe"
+          if (-not (Test-Path $app)) { throw "Executable not created" }
+          if ((Get-Item $app).Length -lt 1000000) { throw "Executable unexpectedly small" }
+          Write-Host "Built Windows executable size:" (Get-Item $app).Length
+      - uses: actions/upload-artifact@v4
+        with:
+          name: SwitchModderSHOP-CatalogManager-Windows
+          path: dist/SwitchModderSHOP-Catalog-Manager.exe
+          if-no-files-found: error
+          retention-days: 30
